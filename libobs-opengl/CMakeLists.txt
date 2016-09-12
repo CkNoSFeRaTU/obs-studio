@@ -1,8 +1,9 @@
 project(libobs-opengl)
 
-
-find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
+if (NOT OSMESA)
+	find_package(OpenGL REQUIRED)
+	include_directories(${OPENGL_INCLUDE_DIR})
+endif()
 
 add_definitions(-DLIBOBS_EXPORTS)
 
@@ -29,6 +30,11 @@ elseif(APPLE)
 		${COCOA}
 		${IOSURF}
 		${OPENGL_gl_LIBRARY})
+elseif(OSMESA)
+	set(libobs-opengl_PLATFORM_DEPS)
+
+	set(libobs-opengl_PLATFORM_SOURCES
+		gl-osmesa.c)
 else() #This needs to change to be more specific to get ready for Wayland
 	find_package(XCB COMPONENTS XCB REQUIRED)
 	find_package(X11_XCB REQUIRED)

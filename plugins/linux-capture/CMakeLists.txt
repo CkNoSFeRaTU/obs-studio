@@ -1,6 +1,6 @@
 project(linux-capture)
 
-find_package(X11 REQUIRED)
+find_package(X11)
 if(NOT X11_Xcomposite_FOUND)
 	message(STATUS "Xcomposite library not found, linux-capture plugin disabled")
 	return()

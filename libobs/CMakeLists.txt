@@ -336,6 +336,9 @@ source_group("media-io\\Header Files" FILES ${libobs_mediaio_HEADERS})
 source_group("util\\Source Files" FILES ${libobs_util_SOURCES})
 source_group("util\\Header Files" FILES ${libobs_util_HEADERS})
 
+if (OSMESA)
+	add_definitions(-DOSMESA)
+endif()
 
 add_library(libobs SHARED ${libobs_SOURCES} ${libobs_HEADERS})
 

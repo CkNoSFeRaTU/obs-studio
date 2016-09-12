@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 2.8.12)
 
 project(obs-studio)
 
+option(OSMESA "OSMESA" OFF)
+if (OSMESA)
+    set(OPENGL_gl_LIBRARY OSMesa)
+endif()
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 include(ObsHelpers)
@@ -15,7 +20,7 @@ if(MSVC AND NOT EXISTS "${CMAKE_BINARY_DIR}/ALL_BUILD.vcxproj.user")
 endif()
 
 if(NOT CMAKE_BUILD_TYPE)
-        set(CMAKE_BUILD_TYPE RelWithDebInfo)
+#IGNORE         set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()
 
 find_package(CXX11 REQUIRED)
@@ -96,6 +101,7 @@ if(NOT INSTALLER_RUN)
 	add_subdirectory(libobs-opengl)
 	add_subdirectory(libobs)
 	add_subdirectory(UI)
+	add_subdirectory(CLI)
 	add_subdirectory(plugins)
 	if (BUILD_TESTS)
 		add_subdirectory(test)

@@ -2,7 +2,7 @@ project(glad)
 
 find_package(OpenGL)
 
-if(NOT WIN32 AND NOT APPLE)
+if(NOT WIN32 AND NOT APPLE AND NOT OSMESA)
 	find_package(X11)
 endif()
 
@@ -14,7 +14,7 @@ if(WIN32)
 	set(glad_PLATFORM_SOURCES
 		src/glad_wgl.c
 		include/glad/glad_wgl.h)
-elseif(NOT APPLE)
+elseif(NOT APPLE AND NOT OSMESA)
 	set(glad_PLATFORM_SOURCES
 		src/glad_glx.c
 		include/glad/glad_glx.h)
@@ -27,9 +27,15 @@ set_target_properties(glad PROPERTIES
 	OUTPUT_NAME obsglad
 	VERSION "0"
 	SOVERSION "0")
+if(NOT OSMESA)
 target_include_directories(glad
 	PUBLIC include
 	PRIVATE ${X11_X11_INCLUDE_PATH} ${OPENGL_INCLUDE_DIR})
+else()
+target_include_directories(glad
+	PUBLIC include)
+	add_definitions(-DOSMESA)
+endif()
 target_compile_definitions(glad
 	PRIVATE GLAD_GLAPI_EXPORT_BUILD)
 
@@ -41,7 +47,7 @@ if(NOT MSVC)
 	endif()
 endif()
 
-if(NOT WIN32 AND NOT APPLE)
+if(NOT WIN32 AND NOT APPLE AND NOT OSMESA)
 	set(glad_PLATFORM_DEPS
 		${X11_X11_LIB})
 	# only link to libdl on linux

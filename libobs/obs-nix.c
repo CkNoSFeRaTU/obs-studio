@@ -24,11 +24,13 @@
 #endif
 #include <sys/sysinfo.h>
 #include <sys/utsname.h>
+#if !defined(OSMESA)
 #include <xcb/xcb.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xlib-xcb.h>
 #include <X11/keysym.h>
+#endif
 #include <inttypes.h>
 #include "util/dstr.h"
 #include "obs-internal.h"
@@ -249,7 +251,7 @@ void log_system_info(void)
  * words it will be based on the key code rather than the key symbol.  The same
  * applies to checking key press states.
  */
-
+#if !defined(OSMESA)
 struct keycode_list {
 	DARRAY(xcb_keycode_t) list;
 };
@@ -663,13 +665,14 @@ bool obs_hotkeys_platform_init(struct obs_core_hotkeys *hotkeys)
 void obs_hotkeys_platform_free(struct obs_core_hotkeys *hotkeys)
 {
 	obs_hotkeys_platform_t *context = hotkeys->platform_context;
+	if (context) {
+		for (size_t i = 0; i < OBS_KEY_LAST_VALUE; i++)
+			da_free(context->keycodes[i].list);
 
-	for (size_t i = 0; i < OBS_KEY_LAST_VALUE; i++)
-		da_free(context->keycodes[i].list);
-
-	XCloseDisplay(context->display);
-	bfree(context->keysyms);
-	bfree(context);
+		XCloseDisplay(context->display);
+		bfree(context->keysyms);
+		bfree(context);
+	}
 
 	hotkeys->platform_context = NULL;
 }
@@ -964,3 +967,26 @@ void obs_key_combination_to_str(obs_key_combination_t combination,
 		add_combo_key(combination.key, str);
 	}
 }
+#else
+void obs_hotkeys_platform_free(struct obs_core_hotkeys *hotkeys)
+{
+}
+
+bool obs_hotkeys_platform_is_pressed(obs_hotkeys_platform_t *context,
+		obs_key_t key)
+{
+	return false;
+}
+bool obs_hotkeys_platform_init(struct obs_core_hotkeys *hotkeys)
+{
+	return true;
+}
+obs_key_t obs_key_from_virtual_key(int sym)
+{
+	return OBS_KEY_NONE;
+}
+void obs_key_combination_to_str(obs_key_combination_t combination,
+		struct dstr *str)
+{
+}
+#endif

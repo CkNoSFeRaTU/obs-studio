@@ -1,0 +1,95 @@
+
+What is this?
+
+   This is test interface used to testing with OSMesa functionality.
+   OSMesa is special interface for offscreen rendering so you can use
+
+How I can run it?
+
+   - Write json config file, example:
+{
+  "settings": {
+    "width": 1920,
+    "height": 1080,
+    "graphics": "libobs-opengl.so.0.0"
+  },
+  "sources": [
+    {
+      "type": "image_source",
+      "pos_x": 0,
+      "pos_y": 0,
+      "width": 1920,
+      "height": 1080,
+      "scale": "inner",
+      "parameters" : [
+        { "name": "file", "value": "/home/nosferatu/4k.jpg" }
+      ]
+    },
+    {
+      "type": "image_source",
+      "pos_x": 890,
+      "pos_y": 470,
+      "width": 140,
+      "height": 140,
+      "scale": "inner",
+      "parameters" : [
+        { "name": "file", "value": "/home/nosferatu/mt.png" }
+      ]
+    },
+    {
+      "type": "text_ft2_source",
+      "pos_x": 100,
+      "pos_y": 100,
+      "width": 0,
+      "height": 0,
+      "scale": "none",
+      "parameters" : [
+        { "name": "text", "value": "This is a test..." },
+        { "name": "size", "value": 32 },
+        { "name": "face", "value": "Sans Serif" },
+        { "name": "style", "value": "normal" },
+        { "name": "color1", "value": 4278255360 },
+        { "name": "color2", "value": 4294967040 }
+      ]
+    }
+  ],
+  "encoders": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "video_bitrate": 4500,
+      "audio_bitrate": 128,
+      "preset": "veryfast",
+      "profile": "main",
+      "outputs" : [
+        {
+          "type": "rtmp_output",
+          "server": "rtmp://127.0.0.1/live",
+          "key": "1080p"
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 7200,
+      "video_bitrate": 1500,
+      "audio_bitrate": 128,
+      "preset": "veryfast",
+      "profile": "main",
+      "outputs" : [
+        {
+          "type": "rtmp_output",
+          "server": "rtmp://127.0.0.1/live",
+          "key": "720p"
+        }
+      ]
+    }
+  ]
+}
+   
+   - Execute obs-cli <json-config-file>
+
+Any caveats if I'm using Mesa's software rasterizer?
+   - Make sure you are using llvmpipe rasterizer, it considerably faster than legacy swrast.
+   - You can encounter problem with shader compiling. You can override this problem by using these environment variables:
+       MESA_GL_VERSION_OVERRIDE=2.1 MESA_GLSL_VERSION_OVERRIDE=150
