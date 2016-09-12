@@ -1,8 +1,8 @@
 
 What is this?
 
-   This is test interface used to testing with OSMesa functionality.
-   OSMesa is special interface for offscreen rendering so you can use
+   This is test interface used for testing OSMesa functionality.
+   OSMesa is a special interface for offscreen rendering. You can use it on server without X.Org/XCB/GLX or any GPU at all.
 
 How I can run it?
 
