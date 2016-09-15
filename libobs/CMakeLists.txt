@@ -108,6 +108,23 @@ elseif(APPLE)
 		${IOKIT}
 		${CARBON})
 elseif(UNIX)
+	if (NOT OSMESA)
+		find_package(XCB COMPONENTS XCB REQUIRED)
+		find_package(X11_XCB REQUIRED)
+
+		include_directories(
+			${XCB_INCLUDE_DIRS}
+			${X11_XCB_INCLUDE_DIRS})
+
+		add_definitions(
+			${XCB_DEFINITIONS}
+			${X11_XCB_DEFINITIONS})
+
+		set(libobs_PLATFORM_DEPS
+			${XCB_LIBRARIES}
+			${X11_XCB_LIBRARIES})
+	endif()
+
 	set(libobs_PLATFORM_SOURCES
 		obs-nix.c
 		util/threading-posix.c
