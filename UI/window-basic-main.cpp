@@ -3185,22 +3185,42 @@ QMenu *OBSBasic::CreateAddSourcePopupMenu()
 
 	QMenu *popup = new QMenu(QTStr("Add"), this);
 
-	auto addSource = [this, popup] (const char *type, const char *name) {
-		QAction *popupItem = new QAction(QT_UTF8(name), this);
+	auto getActionAfter = [] (QMenu *menu, const QString &name)
+	{
+		QList<QAction*> actions = menu->actions();
+
+		for (QAction *menuAction : actions) {
+			if (menuAction->text().compare(name) >= 0)
+				return menuAction;
+		}
+
+		return (QAction*)nullptr;
+	};
+
+	auto addSource = [this, getActionAfter] (QMenu *popup,
+			const char *type, const char *name)
+	{
+		QString qname = QT_UTF8(name);
+		QAction *popupItem = new QAction(qname, this);
 		popupItem->setData(QT_UTF8(type));
 		connect(popupItem, SIGNAL(triggered(bool)),
 				this, SLOT(AddSourceFromAction()));
-		popup->addAction(popupItem);
+
+		QAction *after = getActionAfter(popup, qname);
+		popup->insertAction(after, popupItem);
 	};
 
 	while (obs_enum_input_types(idx++, &type)) {
 		const char *name = obs_source_get_display_name(type);
+		uint32_t caps = obs_get_source_output_flags(type);
 
-		addSource(type, name);
-		foundValues = true;
+		if ((caps & OBS_SOURCE_DEPRECATED) == 0) {
+			addSource(popup, type, name);
+			foundValues = true;
+		}
 	}
 
-	addSource("scene", Str("Basic.Scene"));
+	addSource(popup, "scene", Str("Basic.Scene"));
 
 	if (!foundValues) {
 		delete popup;
