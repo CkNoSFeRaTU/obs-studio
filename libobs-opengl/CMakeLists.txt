@@ -1,6 +1,6 @@
 project(libobs-opengl)
 
-if (NOT OSMESA)
+if (NOT OSMESA AND NOT EGL)
 	find_package(OpenGL REQUIRED)
 	include_directories(${OPENGL_INCLUDE_DIR})
 endif()
@@ -35,6 +35,12 @@ elseif(OSMESA)
 
 	set(libobs-opengl_PLATFORM_SOURCES
 		gl-osmesa.c)
+elseif(EGL)
+	set(libobs-opengl_PLATFORM_DEPS)
+
+	include_directories("/usr/include/libdrm")
+	set(libobs-opengl_PLATFORM_SOURCES
+		gl-egl.c)
 else() #This needs to change to be more specific to get ready for Wayland
 	find_package(XCB COMPONENTS XCB REQUIRED)
 	find_package(X11_XCB REQUIRED)

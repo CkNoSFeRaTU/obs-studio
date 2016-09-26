@@ -7,6 +7,11 @@ if (OSMESA)
     set(OPENGL_gl_LIBRARY OSMesa)
 endif()
 
+option(EGL "EGL" OFF)
+if (EGL)
+    set(OPENGL_gl_LIBRARY EGL)
+endif()
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 include(ObsHelpers)

@@ -358,7 +358,8 @@ static int load_config(obscli_t *obscli, char *path)
 			free(encoder);
 	}
 
-	init_obscli(obscli);
+	if (init_obscli(obscli) < 0)
+		return 0;
 	init_obscli_encoders(obscli);
 
 	json_t *sources = json_object_get(obscli->json, "sources");

@@ -355,6 +355,8 @@ source_group("util\\Header Files" FILES ${libobs_util_HEADERS})
 
 if (OSMESA)
 	add_definitions(-DOSMESA)
+elseif (EGL)
+	add_definitions(-DEGL)
 endif()
 
 add_library(libobs SHARED ${libobs_SOURCES} ${libobs_HEADERS})

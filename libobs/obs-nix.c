@@ -251,7 +251,7 @@ void log_system_info(void)
  * words it will be based on the key code rather than the key symbol.  The same
  * applies to checking key press states.
  */
-#if !defined(OSMESA)
+#if !defined(OSMESA) && !defined(EGL)
 struct keycode_list {
 	DARRAY(xcb_keycode_t) list;
 };
